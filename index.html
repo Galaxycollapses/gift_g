@@ -3,26 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <title>Mini App</title>
+
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
 
-<body style="font-family: Arial; text-align:center; margin-top:50px;">
+<body style="font-family: sans-serif; text-align:center; margin-top:50px;">
 
-    <h2>Mini App</h2>
+<h2>Mini App</h2>
 
-    <button onclick="sendData()" style="padding:15px;font-size:18px;">
-        Нажми на меня
-    </button>
+<button id="sendBtn"></button>
 
-    <script>
-        const tg = window.Telegram.WebApp;
+<script>
+    const tg = window.Telegram.WebApp;
+    tg.expand();
 
-        tg.expand();
+    // текст кнопки (можно менять)
+    const buttonText = "Нажми меня";
 
-        function sendData() {
-            tg.sendData("clicked"); // отправляем данные боту
-        }
-    </script>
+    const btn = document.getElementById("sendBtn");
+    btn.innerText = buttonText;
+
+    btn.onclick = () => {
+        tg.sendData("button_clicked");
+    };
+</script>
 
 </body>
 </html>
