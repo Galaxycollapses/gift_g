@@ -7,45 +7,61 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
-            font-family: sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; margin: 0; font-family: sans-serif;
+            background-color: var(--tg-theme-bg-color, #f0f0f0);
+            color: var(--tg-theme-text-color, #000);
         }
         .container {
-            text-align: center;
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            text-align: center; background: var(--tg-theme-secondary-bg-color, white);
+            padding: 40px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
         .btn-confirm {
-            padding: 15px 30px;
-            font-size: 18px;
-            background-color: #ccc; /* Серый цвет */
-            color: #666;
-            border: none;
-            border-radius: 10px;
-            cursor: not-allowed; /* Курсор запрета */
-            pointer-events: none; /* Делает кнопку некликабельной */
+            padding: 15px 30px; font-size: 18px; border-radius: 10px; border: none;
+            background-color: var(--tg-theme-button-color, #007bff); /* Цвет кнопки ТГ */
+            color: var(--tg-theme-button-text-color, white); /* Цвет текста кнопки ТГ */
+            cursor: pointer; /* Делаем кликабельной */
+            transition: background-color 0.2s ease;
+        }
+        .btn-confirm:hover {
+            opacity: 0.9;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Текст кнопки подтянется из параметров или можно оставить статичным -->
-        <button class="btn-confirm" id="main-btn">Подтвердить</button>
+        <button class="btn-confirm" id="confirmButton">Подтвердить</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand(); // Раскрыть на все окно
 
-        // Можно динамически менять текст из URL параметров,
-        // но для простоты оставим как в задании
+        const confirmButton = document.getElementById('confirmButton');
+        const urlParams = new URLSearchParams(window.location.search);
+
+        // Получаем параметр 'start_param' из URL, который бот передаст
+        const startParam = urlParams.get('start_param');
+
+        // Можно динамически задать текст кнопки из конфига, если передать его в URL
+        // const appButtonText = urlParams.get('app_button_text');
+        // if (appButtonText) {
+        //     confirmButton.innerText = decodeURIComponent(appButtonText);
+        // }
+
+        confirmButton.addEventListener('click', () => {
+            // Формируем данные для отправки боту
+            const dataToSend = {
+                action: 'confirm', // Идентификатор действия
+                start_param: startParam // Передаем параметр 'start' обратно боту
+            };
+
+            // Отправляем данные боту
+            tg.sendData(JSON.stringify(dataToSend));
+
+            // Опционально: можно закрыть мини-приложение после отправки
+            // tg.close();
+        });
     </script>
 </body>
 </html>
