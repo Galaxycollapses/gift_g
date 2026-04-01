@@ -1,83 +1,66 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
-    <title>Мое Мини-Приложение</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             margin: 0;
-            background-color: var(--tg-theme-bg-color, #f0f2f5); /* Используем тему Telegram */
-            color: var(--tg-theme-text-color, #000000); /* Цвет текста из темы */
+            background-color: var(--tg-theme-bg-color, #ffffff);
         }
-        button {
-            padding: 15px 30px;
-            font-size: 1.2em;
+        #main-btn {
+            padding: 15px 25px;
+            font-size: 18px;
             cursor: pointer;
             border: none;
-            border-radius: 8px;
-            background-color: var(--tg-theme-button-color, #007bff); /* Цвет кнопки из темы */
-            color: var(--tg-theme-button-text-color, white); /* Цвет текста кнопки из темы */
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: var(--tg-theme-button-color-hover, #0056b3); /* Цвет при наведении */
+            border-radius: 10px;
+            background-color: var(--tg-theme-button-color, #2481cc);
+            color: var(--tg-theme-button-text-color, #ffffff);
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
-    <button id="mainButton"></button>
+
+    <button id="main-btn">Загрузка...</button>
 
     <script>
-        const button = document.getElementById('mainButton');
+        const tg = window.Telegram.WebApp;
+        const btn = document.getElementById('main-btn');
 
-        // Функция для получения параметра из URL
-        function getQueryParam(name) {
-            const urlParams = new URLSearchParams(window.location.search);
-            return urlParams.get(name);
+        // Сообщаем Telegram, что приложение готово
+        tg.ready();
+        tg.expand();
+
+        // Получаем текст кнопки из параметров URL (передадим его через бота)
+        const urlParams = new URLSearchParams(window.location.search);
+        const btnText = urlParams.get('btn_text');
+        if (btnText) {
+            btn.innerText = btnText;
         }
 
-        // Получаем текст для кнопки из параметра URL, переданного ботом
-        const miniAppButtonText = getQueryParam('button_text');
-        if (miniAppButtonText) {
-            button.textContent = miniAppButtonText;
-        } else {
-            button.textContent = "Нажми меня!"; // Текст по умолчанию
-        }
+        btn.addEventListener('click', () => {
+            // Проверяем наличие параметра start_param (диплинк)
+            // Он доступен в initDataUnsafe, если пользователь зашел по ссылке /start=...
+            const startParam = tg.initDataUnsafe.start_param;
 
-        button.addEventListener('click', () => {
-            if (window.Telegram && window.Telegram.WebApp) {
-                const initData = window.Telegram.WebApp.initDataUnsafe;
-                let dataToSend = 'standard_click'; // Данные по умолчанию
-
-                // Проверяем, был ли бот запущен по диплинку
-                if (initData && initData.start_param) {
-                    dataToSend = 'deep_link_click';
-                }
-
-                // Отправляем данные боту и закрываем мини-приложение
-                window.Telegram.WebApp.sendData(dataToSend);
-                window.Telegram.WebApp.close();
+            if (startParam) {
+                // Если зашли по ссылке
+                tg.sendData("link_activated");
             } else {
-                alert('Telegram Web App script not loaded or not in Telegram environment.');
+                // Если просто нажали /start
+                tg.sendData("just_hello");
             }
-        });
 
-        // Инициализация Web App
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
-            window.Telegram.WebApp.expand(); // Расширяем мини-приложение на весь экран
-            // Дополнительно можно настроить внешний вид WebApp, используя themeParams
-            document.body.style.backgroundColor = window.Telegram.WebApp.themeParams.bg_color || '#f0f2f5';
-        } else {
-            console.error('Telegram Web App script not found.');
-        }
+            // Закрываем приложение сразу после отправки данных
+            tg.close();
+        });
     </script>
 </body>
 </html>
