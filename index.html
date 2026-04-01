@@ -1,32 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Test WebApp</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>Mini App</title>
 </head>
 <body>
-    <h1>Тестовое мини-приложение</h1>
-    <button onclick="sendTestMessage()">Отправить простой текст</button>
+    <button id="btn"></button>
 
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script>
-        const WebApp = window.Telegram.WebApp;
-        WebApp.ready();
-        WebApp.expand();
-        console.log("WebApp Ready");
+        const tg = window.Telegram.WebApp;
 
-        function sendTestMessage() {
-            try {
-                const testData = "Hello from simple test app!";
-                console.log("Sending data:", testData);
-                WebApp.sendData(testData);
-                console.log("Data sent. Closing WebApp.");
-                WebApp.close();
-            } catch (error) {
-                console.error("Error sending data:", error);
-            }
-        }
+        // текст кнопки (можно захардкодить или подтянуть с сервера)
+        const buttonText = "Нажми меня"; // можно синхронизировать с config
+
+        const btn = document.getElementById("btn");
+        btn.innerText = buttonText;
+
+        btn.onclick = () => {
+            tg.sendData("button_clicked");
+        };
+
+        tg.expand();
     </script>
 </body>
 </html>
