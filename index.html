@@ -25,9 +25,6 @@
     </style>
 </head>
 <body>
-    <!-- Текст этой кнопки берется из конфига и передается сюда динамически,
-         но для простоты в этом примере мы просто впишем его вручную
-         или можно сделать получение через параметры -->
     <button id="mainButton">Загрузка...</button>
 
     <script>
@@ -38,8 +35,17 @@
 
         // Получаем текст кнопки из параметров URL
         const urlParams = new URLSearchParams(window.location.search);
-        const buttonText = urlParams.get('buttonText') || "Нажми меня (дефолт)"; // Fallback на случай, если параметр не передан
+        const buttonText = urlParams.get('buttonText') || "Нажми меня (дефолт)";
         btn.innerText = buttonText;
+
+        // --- ЭТОТ БЛОК НУЖНО ДОБАВИТЬ ---
+        btn.onclick = () => {
+            // Отправляем данные "ref_clicked" обратно в бота
+            tg.sendData("ref_clicked");
+            // Опционально: можно закрыть мини-приложение после отправки
+            // tg.close();
+        };
+        // --- КОНЕЦ ДОБАВЛЕННОГО БЛОКА ---
     </script>
 </body>
 </html>
