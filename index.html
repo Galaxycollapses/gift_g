@@ -6,8 +6,7 @@
 
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
 </head>
-
-<body style="font-family: sans-serif; text-align:center; margin-top:50px;">
+<body>
 
 <h2>Mini App</h2>
 
@@ -15,17 +14,33 @@
 
 <script>
     const tg = window.Telegram.WebApp;
-    tg.expand();
 
-    // текст кнопки (можно менять)
-    const buttonText = "Нажми меня";
-
+    const buttonText = "Отправить событие";
     const btn = document.getElementById("sendBtn");
+
     btn.innerText = buttonText;
 
-    btn.onclick = () => {
-        tg.sendData("button_clicked");
+    btn.onclick = async () => {
+
+        const payload = {
+            action: "button_clicked",
+            user: tg.initDataUnsafe.user?.id,
+            time: Date.now()
+        };
+
+        // отправляем событие сами
+        await fetch("http://localhost:8000/event", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        console.log("Кнопка нажата, приложение НЕ закрывается");
     };
+
+    tg.expand();
 </script>
 
 </body>
