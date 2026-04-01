@@ -1,49 +1,27 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html>
 <head>
     <meta charset="UTF-8">
     <title>Mini App</title>
-
-    <!-- Telegram WebApp API -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #0f0f0f;
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        button {
-            padding: 15px 25px;
-            font-size: 18px;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-        }
-    </style>
 </head>
 
-<body>
+<body style="font-family: Arial; text-align:center; margin-top:50px;">
 
-<button onclick="test()">TEST</button>
+<h2>Mini App</h2>
+
+<button onclick="sendData()" style="padding:15px;font-size:18px;">
+    Нажми на меня
+</button>
 
 <script>
     const tg = window.Telegram.WebApp;
 
-    tg.ready();
+    tg.expand();
 
-    function test() {
-        alert("CLICK");
-        tg.sendData("HELLO_FROM_WEBAPP");
+    function sendData() {
+        tg.sendData("clicked"); // отправляем данные боту
     }
-    console.log(window.Telegram);
-    console.log(window.Telegram.WebApp);
 </script>
 
 </body>
