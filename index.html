@@ -1,38 +1,103 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Mini App</title>
-    <!-- Подключаем скрипт Telegram -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мое Мини-приложение</title>
+    <!-- Подключаем Telegram Web App JS SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        button { padding: 15px 25px; font-size: 18px; cursor: pointer; }
+        /* ... ваш CSS ... */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: var(--tg-theme-bg-color, #ffffff); /* Используем тему Telegram */
+            color: var(--tg-theme-text-color, #000000);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        h1 {
+            color: var(--tg-theme-text-color, #000000);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        button {
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            border-radius: 12px;
+            background-color: var(--tg-theme-button-color, #007bff); /* Используем тему Telegram */
+            color: var(--tg-theme-button-text-color, #ffffff);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+        button:active {
+            transform: translateY(1px);
+            filter: brightness(0.9);
+        }
     </style>
 </head>
 <body>
-    <!-- Текст кнопки будет вставлен из конфига при деплое или через JS -->
-    <button id="mainButton">Загрузка...</button>
+    <h1>Добро пожаловать в мини-приложение!</h1>
+    <button id="mainButton"></button>
 
     <script>
-        const tg = window.Telegram.WebApp;
-        tg.expand(); // Расширить на весь экран
+        const WebApp = window.Telegram.WebApp;
 
-        // Имитируем получение текста из "конфига" (в реальности можно передать параметром в URL)
-        const buttonText = "Нажми меня";
-        const btn = document.getElementById('mainButton');
-        btn.innerText = buttonText;
+        // Инициализируем WebApp
+        WebApp.ready(); // Убедитесь, что это здесь
+        WebApp.expand(); // Убедитесь, что это здесь
 
-        btn.addEventListener('click', () => {
-            // Отправляем данные боту (работает только для KeyboardButton)
-            tg.sendData("Кнопка нажата!");
+        const mainButton = document.getElementById('mainButton');
 
-            // Если вы хотите вывести в консоль БОТА при нажатии из Inline-кнопки,
-            // здесь должен быть fetch запрос к вашему API.
-            console.log("Кнопка нажата внутри Mini App");
+        // Устанавливаем текст кнопки
+        // ВАЖНО: Для отладки, временно закомментируйте получение текста из URL
+        // и жестко пропишите текст, чтобы исключить проблемы с URL параметрами.
+        // const urlParams = new URLSearchParams(window.location.search);
+        // mainButton.innerText = urlParams.get('button_text') || "Кнопка в мини-приложении";
+        mainButton.innerText = "Нажми меня в приложении!"; // <-- Временно жестко пропишите текст
 
-            tg.close(); // Закрыть приложение
+        // Обработчик нажатия на кнопку
+        mainButton.addEventListener('click', () => {
+            console.log("Кнопка в мини-приложении нажата!"); // <-- Добавьте это для отладки JS
+
+            // Отправляем данные боту при нажатии кнопки
+            try {
+                const dataToSend = JSON.stringify({
+                    action: "mini_app_button_pressed",
+                    timestamp: new Date().toISOString(),
+                    // Получаем user_id безопасно, если он есть
+                    user_id: WebApp.initDataUnsafe && WebApp.initDataUnsafe.user ? WebApp.initDataUnsafe.user.id : 'unknown',
+                    // Добавляем другие данные, если нужно
+                    some_other_data: "example"
+                });
+                console.log("Отправляем данные:", dataToSend); // <-- Логирование отправляемых данных
+                WebApp.sendData(dataToSend);
+                console.log("Данные отправлены методом sendData."); // <-- Подтверждение вызова sendData
+                WebApp.close(); // Приложение закрывается
+                console.log("Приложение закрыто методом close."); // <-- Подтверждение вызова close
+            } catch (error) {
+                console.error("Ошибка при отправке данных из WebApp:", error); // <-- Отлов ошибок JS
+            }
         });
+
+        // Опционально: Добавить вывод в консоль при получении initData
+        if (WebApp.initDataUnsafe) {
+            console.log("InitData:", WebApp.initDataUnsafe);
+            if (WebApp.initDataUnsafe.user) {
+                console.log("User ID:", WebApp.initDataUnsafe.user.id);
+            }
+        } else {
+            console.warn("WebApp.initDataUnsafe недоступен. Убедитесь, что бот запущен через deep-link.");
+        }
     </script>
 </body>
 </html>
