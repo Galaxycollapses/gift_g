@@ -8,21 +8,21 @@
 
 <body style="font-family: Arial; text-align:center; margin-top:50px;">
 
-<h2>Mini App</h2>
+    <h2>Mini App</h2>
 
-<button onclick="sendData()" style="padding:15px;font-size:18px;">
-    Нажми на меня
-</button>
+    <button onclick="sendData()" style="padding:15px;font-size:18px;">
+        Нажми на меня
+    </button>
 
-<script>
-    const tg = window.Telegram.WebApp;
+    <script>
+        const tg = window.Telegram.WebApp;
 
-    tg.expand();
+        tg.expand();
 
-    function sendData() {
-        tg.sendData("clicked"); // отправляем данные боту
-    }
-</script>
+        function sendData() {
+            tg.sendData("clicked"); // отправляем данные боту
+        }
+    </script>
 
 </body>
 </html>
