@@ -1,103 +1,62 @@
-<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мое Мини-приложение</title>
-    <!-- Подключаем Telegram Web App JS SDK -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        /* ... ваш CSS ... */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-            background-color: var(--tg-theme-bg-color, #ffffff); /* Используем тему Telegram */
-            color: var(--tg-theme-text-color, #000000);
-            transition: background-color 0.3s, color 0.3s;
-        }
-        h1 {
-            color: var(--tg-theme-text-color, #000000);
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        button {
-            padding: 15px 30px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-            border: none;
-            border-radius: 12px;
-            background-color: var(--tg-theme-button-color, #007bff); /* Используем тему Telegram */
-            color: var(--tg-theme-button-text-color, #ffffff);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            transition: background-color 0.2s ease, transform 0.1s ease;
-        }
-        button:active {
-            transform: translateY(1px);
-            filter: brightness(0.9);
-        }
-    </style>
-</head>
-<body>
-    <h1>Добро пожаловать в мини-приложение!</h1>
-    <button id="mainButton"></button>
+<script>
+    // ... остальной код JavaScript ...
 
-    <script>
+    if (window.Telegram && window.Telegram.WebApp) {
         const WebApp = window.Telegram.WebApp;
 
-        // Инициализируем WebApp
-        WebApp.ready(); // Убедитесь, что это здесь
-        WebApp.expand(); // Убедитесь, что это здесь
+        WebApp.ready();
+        WebApp.expand();
+
+        console.log("Telegram WebApp SDK готов и расширен.");
+        console.log("WebApp.initDataUnsafe:", WebApp.initDataUnsafe);
+
+        // --- УЛУЧШЕННАЯ ПРОВЕРКА user_id ---
+        const userId = (WebApp.initDataUnsafe && WebApp.initDataUnsafe.user && WebApp.initDataUnsafe.user.id)
+                       ? WebApp.initDataUnsafe.user.id
+                       : 'unknown_user_id_from_webapp'; // Меняем на более специфичное значение
+        console.log("Полученный user_id из WebApp:", userId);
+        // --- КОНЕЦ УЛУЧШЕННОЙ ПРОВЕРКИ ---
 
         const mainButton = document.getElementById('mainButton');
 
-        // Устанавливаем текст кнопки
-        // ВАЖНО: Для отладки, временно закомментируйте получение текста из URL
-        // и жестко пропишите текст, чтобы исключить проблемы с URL параметрами.
-        // const urlParams = new URLSearchParams(window.location.search);
-        // mainButton.innerText = urlParams.get('button_text') || "Кнопка в мини-приложении";
-        mainButton.innerText = "Нажми меня в приложении!"; // <-- Временно жестко пропишите текст
-
-        // Обработчик нажатия на кнопку
-        mainButton.addEventListener('click', () => {
-            console.log("Кнопка в мини-приложении нажата!"); // <-- Добавьте это для отладки JS
-
-            // Отправляем данные боту при нажатии кнопки
-            try {
-                const dataToSend = JSON.stringify({
-                    action: "mini_app_button_pressed",
-                    timestamp: new Date().toISOString(),
-                    // Получаем user_id безопасно, если он есть
-                    user_id: WebApp.initDataUnsafe && WebApp.initDataUnsafe.user ? WebApp.initDataUnsafe.user.id : 'unknown',
-                    // Добавляем другие данные, если нужно
-                    some_other_data: "example"
-                });
-                console.log("Отправляем данные:", dataToSend); // <-- Логирование отправляемых данных
-                WebApp.sendData(dataToSend);
-                console.log("Данные отправлены методом sendData."); // <-- Подтверждение вызова sendData
-                WebApp.close(); // Приложение закрывается
-                console.log("Приложение закрыто методом close."); // <-- Подтверждение вызова close
-            } catch (error) {
-                console.error("Ошибка при отправке данных из WebApp:", error); // <-- Отлов ошибок JS
-            }
-        });
-
-        // Опционально: Добавить вывод в консоль при получении initData
-        if (WebApp.initDataUnsafe) {
-            console.log("InitData:", WebApp.initDataUnsafe);
-            if (WebApp.initDataUnsafe.user) {
-                console.log("User ID:", WebApp.initDataUnsafe.user.id);
-            }
+        if (!mainButton) {
+            console.error("Элемент с ID 'mainButton' не найден в DOM!");
         } else {
-            console.warn("WebApp.initDataUnsafe недоступен. Убедитесь, что бот запущен через deep-link.");
+            mainButton.innerText = "Нажми меня в приложении!";
+            console.log("Кнопка 'mainButton' найдена и текст установлен.");
+
+            mainButton.addEventListener('click', () => {
+                console.log("Кнопка в мини-приложении нажата!");
+
+                try {
+                    const dataToSend = JSON.stringify({
+                        action: "mini_app_button_pressed",
+                        timestamp: new Date().toISOString(),
+                        user_id: userId, // ИСПОЛЬЗУЕМ УЖЕ ПРОВЕРЕННЫЙ userId
+                        message: "Привет от мини-приложения!"
+                    });
+                    console.log("Подготовлены данные для отправки:", dataToSend);
+
+                    if (WebApp.sendData) {
+                        WebApp.sendData(dataToSend);
+                        console.log("Данные успешно отправлены методом sendData.");
+                    } else {
+                        console.error("Функция WebApp.sendData не найдена или недоступна.");
+                    }
+
+                    if (WebApp.close) {
+                        WebApp.close();
+                        console.log("Приложение закрыто методом close.");
+                    } else {
+                        console.error("Функция WebApp.close не найдена или недоступна.");
+                    }
+
+                } catch (error) {
+                    console.error("Ошибка при выполнении JavaScript в WebApp:", error);
+                }
+            });
         }
-    </script>
-</body>
-</html>
+    } else {
+        console.error("Telegram WebApp SDK не загружен...");
+    }
+</script>
