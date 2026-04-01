@@ -15,32 +15,14 @@
 <script>
     const tg = window.Telegram.WebApp;
 
-    const buttonText = "Отправить событие";
-    const btn = document.getElementById("sendBtn");
+    document.getElementById("sendBtn").onclick = () => {
 
-    btn.innerText = buttonText;
-
-    btn.onclick = async () => {
-
-        const payload = {
+        tg.sendData(JSON.stringify({
             action: "button_clicked",
-            user: tg.initDataUnsafe.user?.id,
             time: Date.now()
-        };
+        }));
 
-        // отправляем событие сами
-        await fetch("http://localhost:8000/event", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(payload)
-        });
-
-        console.log("Кнопка нажата, приложение НЕ закрывается");
     };
-
-    tg.expand();
 </script>
 
 </body>
