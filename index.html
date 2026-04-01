@@ -5,25 +5,13 @@
     <title>Mini App</title>
 </head>
 <body>
-    <button id="btn"></button>
 
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script>
-        const tg = window.Telegram.WebApp;
+<h2>Mini App</h2>
 
-        // текст кнопки (можно захардкодить или подтянуть с сервера)
-        const buttonText = "Нажми меня"; // можно синхронизировать с config
+<button id="mainBtn"></button>
 
-        const btn = document.getElementById("btn");
-        btn.innerText = buttonText;
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="script.js"></script>
 
-        btn.onclick = () => {
-            tg.sendData("button_clicked");
-            tg.close();  // ← добавь это
-        };
-        console.log("tg object:", window.Telegram);
-        console.log("initData:", window.Telegram.WebApp.initData);
-        tg.expand();
-    </script>
 </body>
 </html>
