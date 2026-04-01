@@ -19,8 +19,8 @@
 
         btn.onclick = () => {
             tg.sendData("button_clicked");
+            tg.close();  // ← добавь это
         };
-
         tg.expand();
     </script>
 </body>
