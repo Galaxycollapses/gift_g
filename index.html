@@ -13,18 +13,6 @@
 <button id="sendBtn"></button>
 
 <script>
-    const tg = window.Telegram.WebApp;
-    tg.expand();
-
-    // текст кнопки из конфига (подставляется вручную)
-    const buttonText = "Нажми меня";
-
-    const btn = document.getElementById("sendBtn");
-    btn.innerText = buttonText;
-
-    btn.onclick = () => {
-        tg.sendData("SECOND_BUTTON_CLICKED");
-    };
     alert("platform = " + window.Telegram?.WebApp?.platform);
 </script>
 
