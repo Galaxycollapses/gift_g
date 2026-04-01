@@ -31,6 +31,15 @@
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        // --- ДОБАВЛЕНО: ОТКЛЮЧАЕМ Main Button ---
+        // Убедимся, что Main Button не отображается и неактивна
+        if (tg.MainButton.isVisible) {
+            tg.MainButton.hide();
+        }
+        // Очищаем любые обработчики, если они были
+        tg.MainButton.offClick();
+        // --- КОНЕЦ ДОБАВЛЕННОГО БЛОКА ---
+
         const btn = document.getElementById('mainButton');
 
         // Получаем текст кнопки из параметров URL
@@ -38,14 +47,13 @@
         const buttonText = urlParams.get('buttonText') || "Нажми меня (дефолт)";
         btn.innerText = buttonText;
 
-        // --- ЭТОТ БЛОК НУЖНО ДОБАВИТЬ ---
         btn.onclick = () => {
             // Отправляем данные "ref_clicked" обратно в бота
             tg.sendData("ref_clicked");
-            // Опционально: можно закрыть мини-приложение после отправки
-            // tg.close();
+            // Опционально: можно закрыть мини-приложение после отправки,
+            // если предполагается, что после нажатия кнопки больше ничего не требуется
+            tg.close();
         };
-        // --- КОНЕЦ ДОБАВЛЕННОГО БЛОКА ---
     </script>
 </body>
 </html>
