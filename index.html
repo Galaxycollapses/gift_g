@@ -21,6 +21,8 @@
             tg.sendData("button_clicked");
             tg.close();  // ← добавь это
         };
+        console.log("tg object:", window.Telegram);
+        console.log("initData:", window.Telegram.WebApp.initData);
         tg.expand();
     </script>
 </body>
