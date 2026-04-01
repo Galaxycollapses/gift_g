@@ -31,15 +31,17 @@
 
 <body>
 
-<button id="mainBtn">Нажми меня</button>
+<button onclick="test()">TEST</button>
 
 <script>
     const tg = window.Telegram.WebApp;
 
-    alert(
-        "platform=" + tg.platform +
-        "\ninitData length=" + tg.initData.length
-    );
+    tg.ready();
+
+    function test() {
+        alert("CLICK");
+        tg.sendData("HELLO_FROM_WEBAPP");
+    }
 </script>
 
 </body>
