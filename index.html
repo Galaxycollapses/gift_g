@@ -5,40 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body {
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; margin: 0; background-color: var(--tg-theme-bg-color, #ffffff);
-        }
-        #main-btn {
-            padding: 15px 30px; font-size: 18px; border-radius: 12px; border: none;
-            background-color: var(--tg-theme-button-color, #2481cc);
-            color: var(--tg-theme-button-text-color, #ffffff);
-            cursor: pointer; font-weight: bold;
-        }
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: var(--tg-theme-bg-color); }
+        button { padding: 15px 30px; font-size: 18px; border-radius: 12px; border: none; background: var(--tg-theme-button-color); color: var(--tg-theme-button-text-color); cursor: pointer; }
     </style>
 </head>
 <body>
-
     <button id="main-btn">Подтвердить</button>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Раскрываем окно
+        tg.expand();
 
-        const confirmBtn = document.getElementById('main-btn');
-
-        confirmBtn.addEventListener('click', () => {
-            // Читаем параметры из URL
+        document.getElementById('main-btn').addEventListener('click', async () => {
             const urlParams = new URLSearchParams(window.location.search);
-            let arg = urlParams.get('arg');
+            const arg = urlParams.get('arg') || "";
+            const userId = tg.initDataUnsafe.user.id; // Получаем ID пользователя
 
-            // Если аргумента в ссылке нет или он пустой — шлем метку
-            if (!arg || arg === 'None' || arg === '') {
-                arg = "_NO_ARG_";
+            // Отправляем запрос на наш Python сервер
+            // Мы используем относительный путь /confirm
+            try {
+                await fetch('/confirm', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        argument: arg
+                    })
+                });
+                // Кнопка нажата, запрос ушел, приложение НЕ закрывается
+                alert("Запрос отправлен!");
+            } catch (e) {
+                alert("Ошибка: " + e);
             }
-
-            // Отправляем данные боту (это закроет Mini App)
-            tg.sendData(arg);
         });
     </script>
 </body>
