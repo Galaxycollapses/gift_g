@@ -25,26 +25,27 @@
     </style>
 </head>
 <body>
-    <!-- Текст этой кнопки будет установлен JavaScript-ом -->
-    <button id="mainButton"></button>
+    <button id="mainButton">Загрузка...</button>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand(); // Расширить на весь экран
+        tg.expand();
 
         const btn = document.getElementById('mainButton');
 
-        // Получаем текст кнопки из параметров URL, переданных ботом
+        // Получаем текст кнопки из параметров URL
         const urlParams = new URLSearchParams(window.location.search);
-        const buttonText = urlParams.get('buttonText') || "Нажми меня (дефолт)"; // Если параметр не передан, используем дефолт
+        const buttonText = urlParams.get('buttonText') || "Нажми меня (дефолт)";
         btn.innerText = buttonText;
 
-        btn.addEventListener('click', () => {
-            // Отправляем данные боту и закрываем приложение
+        // --- ЭТОТ БЛОК НУЖНО ДОБАВИТЬ ---
+        btn.onclick = () => {
+            // Отправляем данные "ref_clicked" обратно в бота
             tg.sendData("ref_clicked");
-            // Если вы хотите закрывать WebApp после нажатия, раскомментируйте следующую строку:
+            // Опционально: можно закрыть мини-приложение после отправки
             // tg.close();
-        });
+        };
+        // --- КОНЕЦ ДОБАВЛЕННОГО БЛОКА ---
     </script>
 </body>
 </html>
