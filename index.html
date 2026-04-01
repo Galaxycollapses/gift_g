@@ -3,12 +3,37 @@
 <head>
     <meta charset="UTF-8">
     <title>Mini App</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f2f2f2;
+        }
+
+        #mainBtn {
+            font-size: 18px;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 10px;
+            background-color: #2AABEE; /* Telegram blue */
+            color: white;
+            cursor: pointer;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        #mainBtn:active {
+            transform: scale(0.98);
+        }
+    </style>
 </head>
+
 <body>
 
 <h2>Mini App</h2>
 
-<button id="mainBtn"></button>
+<button id="mainBtn">...</button>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script src="script.js"></script>
