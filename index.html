@@ -25,7 +25,8 @@
     </style>
 </head>
 <body>
-    <button id="mainButton">Нажми меня</button>
+    <!-- Текст этой кнопки будет установлен JavaScript-ом -->
+    <button id="mainButton"></button>
 
     <script>
         const tg = window.Telegram.WebApp;
@@ -33,18 +34,16 @@
 
         const btn = document.getElementById('mainButton');
 
-        // Текст кнопки внутри веб-приложения.
-        // Если вы его передаете через URL, используйте:
-        // const urlParams = new URLSearchParams(window.location.search);
-        // const buttonText = urlParams.get('buttonText') || "Нажми меня";
-        // btn.innerText = buttonText;
-
-        // Если текст статичен (как в этом примере):
-        btn.innerText = "Нажми меня";
+        // Получаем текст кнопки из параметров URL, переданных ботом
+        const urlParams = new URLSearchParams(window.location.search);
+        const buttonText = urlParams.get('buttonText') || "Нажми меня (дефолт)"; // Если параметр не передан, используем дефолт
+        btn.innerText = buttonText;
 
         btn.addEventListener('click', () => {
+            // Отправляем данные боту и закрываем приложение
             tg.sendData("ref_clicked");
-            // tg.close(); // Можно добавить закрытие, если нужно
+            // Если вы хотите закрывать WebApp после нажатия, раскомментируйте следующую строку:
+            // tg.close();
         });
     </script>
 </body>
