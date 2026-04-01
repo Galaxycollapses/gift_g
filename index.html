@@ -34,31 +34,12 @@
 <button id="mainBtn">Нажми меня</button>
 
 <script>
-    // Получаем Telegram объект
     const tg = window.Telegram.WebApp;
 
-    // Инициализация (ОБЯЗАТЕЛЬНО)
-    tg.ready();
-    tg.expand();
-
-    console.log("Platform:", tg.platform);
-    console.log("InitData:", tg.initData);
-
-    const button = document.getElementById("mainBtn");
-
-    button.onclick = () => {
-
-        console.log("Button clicked");
-
-        // отправка данных боту
-        tg.sendData(JSON.stringify({
-            action: "second_button_clicked",
-            time: Date.now()
-        }));
-
-        // визуальный фидбек
-        button.innerText = "Отправлено ✅";
-    };
+    alert(
+        "platform=" + tg.platform +
+        "\ninitData length=" + tg.initData.length
+    );
 </script>
 
 </body>
